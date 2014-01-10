@@ -33,6 +33,11 @@
                 </arguments>
                 <after>shipping_name</after>
             </action>
+            <action method="addColumnAfter">
+                <columnId>skus</columnId>
+                <arguments helper="atwix_extendedgrid/getSkusColumnParams" />
+                <after>payment_method</after>
+            </action>
         </reference>
     </sales_order_grid_update_handle>
     <adminhtml_sales_order_grid>

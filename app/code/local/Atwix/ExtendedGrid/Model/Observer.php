@@ -15,7 +15,7 @@
  * @category    Atwix
  * @package     Atwix_ExtendedGrid
  * @author      Atwix Core Team
- * @copyright   Copyright (c) 2012 Atwix (http://www.atwix.com)
+ * @copyright   Copyright (c) 2014 Atwix (http://www.atwix.com)
  * @license     http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
@@ -31,5 +31,25 @@ class Atwix_ExtendedGrid_Model_Observer
         $collection = $observer->getOrderGridCollection();
         $select = $collection->getSelect();
         $select->joinLeft(array('payment' => $collection->getTable('sales/order_payment')), 'payment.parent_id=main_table.entity_id', array('payment_method' => 'method'));
+        $select->join('sales_flat_order_item', '`sales_flat_order_item`.order_id=`main_table`.entity_id', array('skus' => new Zend_Db_Expr('group_concat(`sales_flat_order_item`.sku SEPARATOR ", ")')));
+        $select->group('main_table.entity_id');
+    }
+
+    /**
+     * callback function used to filter collection
+     * @param $collection
+     * @param $column
+     * @return $this
+     */
+    public function filterSkus($collection, $column)
+    {
+        if (!$value = $column->getFilter()->getValue()) {
+            return $this;
+        }
+
+        $collection->getSelect()->having(
+            "group_concat(`sales_flat_order_item`.sku SEPARATOR ', ') like ?", "%$value%");
+
+        return $this;
     }
 }
