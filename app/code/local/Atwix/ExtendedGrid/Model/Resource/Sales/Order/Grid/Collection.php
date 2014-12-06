@@ -46,4 +46,16 @@ class Atwix_ExtendedGrid_Model_Resource_Sales_Order_Grid_Collection extends Mage
 
         return $countSelect;
     }
+
+    /**
+     * Init select
+     * @return Mage_Core_Model_Resource_Db_Collection_Abstract
+     */
+    protected function _initSelect()
+    {
+        $this->addFilterToMap('store_id', 'main_table.store_id')
+            ->addFilterToMap('created_at', 'main_table.created_at')
+            ->addFilterToMap('updated_at', 'main_table.updated_at');
+        return parent::_initSelect();
+    }
 }
